@@ -29,7 +29,7 @@ type Pkg struct {
 	Version        string
 	Name           string
 	FirstSubmitted int
-	License        string
+	License        []string
 	ID             int
 	PackageBaseID  int
 	PackageBase    string
@@ -39,9 +39,15 @@ type Pkg struct {
 	CategoryID     int
 	URLPath        string
 	NumVotes       int
+	Conflicts      []string
+	Depends        []string
+	MakeDepends    []string
+	OptDepends     []string
+	Provides       []string
 }
 
 func get(values url.Values) ([]Pkg, error) {
+	values.Set("v", "3")
 	resp, err := http.Get(aurURL + values.Encode())
 	if err != nil {
 		return nil, err
@@ -81,6 +87,7 @@ func Info(pkg string) (*Pkg, error) {
 	v := url.Values{}
 	v.Set("type", "info")
 	v.Set("arg", pkg)
+	v.Set("v", "3")
 
 	resp, err := http.Get(aurURL + v.Encode())
 	if err != nil {
