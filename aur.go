@@ -2,20 +2,15 @@ package aur
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 )
 
 const aurURL = "https://aur.archlinux.org/rpc.php?"
 
-type infoResp struct {
-	Version     int    `json:"version"`
-	Type        string `json:"type"`
-	ResultCount int    `json:"resultcount"`
-	Results     Pkg    `json:"results"`
-}
-
-type multiinfoResp struct {
+type response struct {
+	Error       string `json:"error"`
 	Version     int    `json:"version"`
 	Type        string `json:"type"`
 	ResultCount int    `json:"resultcount"`
@@ -55,10 +50,14 @@ func get(values url.Values) ([]Pkg, error) {
 	defer resp.Body.Close()
 
 	dec := json.NewDecoder(resp.Body)
-	result := new(multiinfoResp)
+	result := new(response)
 	err = dec.Decode(result)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(result.Error) > 0 {
+		return nil, fmt.Errorf(result.Error)
 	}
 
 	return result.Results, nil
@@ -87,22 +86,17 @@ func Info(pkg string) (*Pkg, error) {
 	v := url.Values{}
 	v.Set("type", "info")
 	v.Set("arg", pkg)
-	v.Set("v", "3")
 
-	resp, err := http.Get(aurURL + v.Encode())
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	dec := json.NewDecoder(resp.Body)
-	result := new(infoResp)
-	err = dec.Decode(result)
+	results, err := get(v)
 	if err != nil {
 		return nil, err
 	}
 
-	return &result.Results, nil
+	if len(results) > 0 {
+		return &results[0], nil
+	}
+
+	return nil, fmt.Errorf("no results")
 }
 
 // Multiinfo shows info for multiple packages
