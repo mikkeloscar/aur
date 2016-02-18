@@ -37,19 +37,20 @@ func TestMSearch(t *testing.T) {
 
 // TestInfo test getting info for single package
 func TestInfo(t *testing.T) {
-	rs, err := Info("rofi")
+	pkg := "linux-mainline"
+	rs, err := Info(pkg)
 	if err != nil {
 		t.Error(err)
 	}
 
-	if rs.Name != "rofi" {
-		t.Errorf("Expected package name 'rofi', got '%s'", rs.Name)
+	if rs.Name != pkg {
+		t.Errorf("Expected package name '%s', got '%s'", pkg, rs.Name)
 	}
 }
 
 // TestMultiinfo test getting info for multiple packages
 func TestMultiinfo(t *testing.T) {
-	rs, err := Multiinfo([]string{"neovim-git", "rofi"})
+	rs, err := Multiinfo([]string{"neovim-git", "linux-mainline"})
 	if err != nil {
 		t.Error(err)
 	}

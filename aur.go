@@ -42,7 +42,7 @@ type Pkg struct {
 }
 
 func get(values url.Values) ([]Pkg, error) {
-	values.Set("v", "3")
+	values.Set("v", "5")
 	resp, err := http.Get(aurURL + values.Encode())
 	if err != nil {
 		return nil, err

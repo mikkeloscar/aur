@@ -1,13 +1,13 @@
 [![GoDoc](https://godoc.org/github.com/mikkeloscar/aur?status.svg)](https://godoc.org/github.com/mikkeloscar/aur)
 
-# go wrapper for the AUR JSON API v3
+# go wrapper for the AUR JSON API
 
-Wrapper around the json API v3 for AUR found at
+Wrapper around the json API v5 for AUR found at
 http://aur.archlinux.org/rpc.php
 
 ## LICENSE
 
-Copyright (C) 2015  Mikkel Oscar Lyderik Larsen
+Copyright (C) 2016  Mikkel Oscar Lyderik Larsen
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
