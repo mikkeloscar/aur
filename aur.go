@@ -81,28 +81,10 @@ func MSearch(user string) ([]Pkg, error) {
 	return get(v)
 }
 
-// Info shows info of package pkg
-func Info(pkg string) (*Pkg, error) {
+// Info shows info for one or multiple packages.
+func Info(pkgs []string) ([]Pkg, error) {
 	v := url.Values{}
 	v.Set("type", "info")
-	v.Set("arg", pkg)
-
-	results, err := get(v)
-	if err != nil {
-		return nil, err
-	}
-
-	if len(results) > 0 {
-		return &results[0], nil
-	}
-
-	return nil, fmt.Errorf("no results")
-}
-
-// Multiinfo shows info for multiple packages
-func Multiinfo(pkgs []string) ([]Pkg, error) {
-	v := url.Values{}
-	v.Set("type", "multiinfo")
 	for _, arg := range pkgs {
 		v.Add("arg[]", arg)
 	}
