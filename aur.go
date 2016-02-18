@@ -63,7 +63,7 @@ func get(values url.Values) ([]Pkg, error) {
 	return result.Results, nil
 }
 
-// Search searches for packages
+// Search searches for packages by package name.
 func Search(query string) ([]Pkg, error) {
 	v := url.Values{}
 	v.Set("type", "search")
@@ -72,11 +72,22 @@ func Search(query string) ([]Pkg, error) {
 	return get(v)
 }
 
-// MSearch searches for package by user
-func MSearch(user string) ([]Pkg, error) {
+// SearchByNameDesc searches for package by package name and description.
+func SearchByNameDesc(query string) ([]Pkg, error) {
 	v := url.Values{}
-	v.Set("type", "msearch")
-	v.Set("arg", user)
+	v.Set("type", "search")
+	v.Set("by", "name-desc")
+	v.Set("arg", query)
+
+	return get(v)
+}
+
+// SearchByMaintainer searches for package by maintainer.
+func SearchByMaintainer(query string) ([]Pkg, error) {
+	v := url.Values{}
+	v.Set("type", "search")
+	v.Set("by", "maintainer")
+	v.Set("arg", query)
 
 	return get(v)
 }
