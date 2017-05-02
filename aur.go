@@ -19,26 +19,27 @@ type response struct {
 
 // Pkg holds package information
 type Pkg struct {
-	URL            string
-	Description    string
-	Version        string
-	Name           string
-	FirstSubmitted int
-	License        []string
-	ID             int
-	PackageBaseID  int
-	PackageBase    string
-	OutOfDate      int
-	LastModified   int
-	Maintainer     string
-	CategoryID     int
-	URLPath        string
-	NumVotes       int
-	Conflicts      []string
-	Depends        []string
-	MakeDepends    []string
-	OptDepends     []string
-	Provides       []string
+	ID             int      `json:"ID"`
+	Name           string   `json:"Name"`
+	PackageBaseID  int      `json:"PackageBaseID"`
+	PackageBase    string   `json:"PackageBase"`
+	Version        string   `json:"Version"`
+	Description    string   `json:"Description"`
+	URL            string   `json:"URL"`
+	NumVotes       int      `json:"NumVotes"`
+	Popularity     float64  `json:"Popularity"`
+	OutOfDate      int      `json:"OutOfDate"`
+	Maintainer     string   `json:"Maintainer"`
+	FirstSubmitted int      `json:"FirstSubmitted"`
+	LastModified   int      `json:"LastModified"`
+	URLPath        string   `json:"URLPath"`
+	Depends        []string `json:"Depends"`
+	MakeDepends    []string `json:"MakeDepends"`
+	Conflicts      []string `json:"Conflicts"`
+	Replaces       []string `json:"Replaces"`
+	OptDepends     []string `json:"OptDepends"`
+	License        []string `json:"License"`
+	Keywords       []string `json:"Keywords"`
 }
 
 func get(values url.Values) ([]Pkg, error) {
