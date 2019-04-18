@@ -61,11 +61,12 @@ func TestSearchByMaintainer(t *testing.T) {
 	expectPackages(t, 3, rs, err)
 }
 
+// Currently orphan searching is broken due to https://bugs.archlinux.org/task/62388
 // TestOrphans test searching for orphans
-func TestOrphans(t *testing.T) {
-	rs, err := Orphans()
-	expectPackages(t, 500, rs, err)
-}
+//func TestOrphans(t *testing.T) {
+//	rs, err := Orphans()
+//	expectPackages(t, 500, rs, err)
+//}
 
 // TestSearchByDepends test searching for packages by depends
 func TestSearchByDepends(t *testing.T) {
