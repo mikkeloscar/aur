@@ -12,7 +12,6 @@ func expectPackages(t *testing.T, n int, rs []Pkg, err error) {
 	}
 }
 
-
 func expectTooMany(t *testing.T, rs []Pkg, err error) {
 	if err.Error() != "Too many package results." {
 		t.Errorf("Expected error 'Too many package results.', got '%s'", err.Error())
@@ -46,48 +45,49 @@ func TestSearch(t *testing.T) {
 
 // TestSearchByName test searching for packages by package name
 func TestSearchByName(t *testing.T) {
-	rs, err := SearchByNameDesc("linux")
+	rs, err := SearchBy("linux", Name)
 	expectPackages(t, 100, rs, err)
 }
 
 // TestSearchByNameDesc test searching for packages package name and desc.
 func TestSearchByNameDesc(t *testing.T) {
-	rs, err := SearchByNameDesc("linux")
+	rs, err := SearchBy("linux", NameDesc)
 	expectPackages(t, 100, rs, err)
 }
 
 // TestSearchByMaintainer test searching for packages by maintainer
 func TestSearchByMaintainer(t *testing.T) {
-	rs, err := SearchByMaintainer("moscar")
+	rs, err := SearchBy("moscar", Maintainer)
 	expectPackages(t, 3, rs, err)
 }
 
+// Currently orphan searching is broken due to https://bugs.archlinux.org/task/62388
 // TestOrphans test searching for orphans
-func TestOrphans(t *testing.T) {
-	rs, err := Orphans()
-	expectPackages(t, 500, rs, err)
-}
+//func TestOrphans(t *testing.T) {
+//	rs, err := Orphans()
+//	expectPackages(t, 500, rs, err)
+//}
 
 // TestSearchByDepends test searching for packages by depends
 func TestSearchByDepends(t *testing.T) {
-	rs, err := SearchByDepends("python")
+	rs, err := SearchBy("python", Depends)
 	expectPackages(t, 100, rs, err)
 }
 
 // TestSearchByMakeDepends test searching for packages by makedepends
 func TestSearchByMakeDepends(t *testing.T) {
-	rs, err := SearchByMakeDepends("python")
+	rs, err := SearchBy("python", MakeDepends)
 	expectPackages(t, 100, rs, err)
 }
 
 // TestSearchByOptDepends test searching for packages by optdepends
 func TestSearchByOptDepends(t *testing.T) {
-	rs, err := SearchByOptDepends("python")
+	rs, err := SearchBy("python", OptDepends)
 	expectPackages(t, 100, rs, err)
 }
 
 // TestSearchByCheckDepends test searching for packages by checkdepends
 func TestSearchByCheckDepends(t *testing.T) {
-	rs, err := SearchByCheckDepends("python")
+	rs, err := SearchBy("python", CheckDepends)
 	expectPackages(t, 10, rs, err)
 }
