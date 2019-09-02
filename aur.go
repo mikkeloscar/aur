@@ -86,6 +86,11 @@ func get(values url.Values) ([]Pkg, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	if resp.StatusCode == 503 {
+		return nil, errors.New("AUR is unavailable at this moment")
+	}
+
 	defer resp.Body.Close()
 
 	dec := json.NewDecoder(resp.Body)
