@@ -87,7 +87,7 @@ func get(values url.Values) ([]Pkg, error) {
 		return nil, err
 	}
 
-	if resp.StatusCode == 503 {
+	if resp.StatusCode == http.StatusServiceUnavailable {
 		return nil, errors.New("AUR is unavailable at this moment")
 	}
 
