@@ -1,6 +1,9 @@
 package aur
 
-import "testing"
+import (
+	"net/http"
+	"testing"
+)
 
 func expectPackages(t *testing.T, n int, rs []Pkg, err error) {
 	if err != nil {
@@ -19,6 +22,12 @@ func expectTooMany(t *testing.T, rs []Pkg, err error) {
 
 	if len(rs) > 0 {
 		t.Errorf("Expected no results, got '%d'", len(rs))
+	}
+}
+
+func expectError(t *testing.T, expected error, actual error) {
+	if expected != actual {
+		t.Errorf(`Expected error is "%s", but actual "%s"`, expected, actual)
 	}
 }
 
@@ -90,4 +99,11 @@ func TestSearchByOptDepends(t *testing.T) {
 func TestSearchByCheckDepends(t *testing.T) {
 	rs, err := SearchBy("python", CheckDepends)
 	expectPackages(t, 10, rs, err)
+}
+
+// TestGetErrorByStatusCode test get error by HTTP status code
+func TestGetErrorByStatusCode(t *testing.T) {
+	expectError(t, ErrServiceUnavailable, getErrorByStatusCode(http.StatusBadGateway))
+	expectError(t, ErrServiceUnavailable, getErrorByStatusCode(http.StatusGatewayTimeout))
+	expectError(t, ErrServiceUnavailable, getErrorByStatusCode(http.StatusServiceUnavailable))
 }
