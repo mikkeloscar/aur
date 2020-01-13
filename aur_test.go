@@ -2,6 +2,7 @@ package aur
 
 import (
 	"net/http"
+	"net/url"
 	"testing"
 )
 
@@ -29,6 +30,20 @@ func expectError(t *testing.T, expected error, actual error) {
 	if expected != actual {
 		t.Errorf(`Expected error is "%s", but actual "%s"`, expected, actual)
 	}
+}
+
+func TestGetError(t *testing.T) {
+	_, err := get(url.Values{})
+	if err == nil {
+		t.Error("This case must fail")
+	}
+	AURURL = "http://localhost"
+	_, err = get(url.Values{})
+	if err == nil {
+		t.Error("This case must fail")
+	}
+	AURURL = "https://aur.archlinux.org/rpc.php?"
+
 }
 
 // TestInfo test getting info for multiple packages
@@ -68,6 +83,16 @@ func TestSearchByNameDesc(t *testing.T) {
 func TestSearchByMaintainer(t *testing.T) {
 	rs, err := SearchBy("moscar", Maintainer)
 	expectPackages(t, 3, rs, err)
+}
+
+// TestSearchError test wrong By
+func TestSearchPanic(t *testing.T) {
+	defer func() {
+		if recover() == nil {
+			t.Error("This case must fail")
+		}
+	}()
+	_ = By(0).String()
 }
 
 // Currently orphan searching is broken due to https://bugs.archlinux.org/task/62388

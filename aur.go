@@ -27,7 +27,7 @@ type response struct {
 type By int
 
 const (
-	Name By = iota
+	Name By = iota + 1
 	NameDesc
 	Maintainer
 	Depends
