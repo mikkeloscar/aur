@@ -7,23 +7,15 @@ import (
 	"net/url"
 )
 
-//AURURL is the base string from which the query is built
+// AURURL is the base string from which the query is built.
 var AURURL = "https://aur.archlinux.org/rpc.php?"
 
 var (
-	// ErrServiceUnavailable represents a error when AUR is unavailable
+	// ErrServiceUnavailable represents a error when AUR is unavailable.
 	ErrServiceUnavailable = errors.New("AUR is unavailable at this moment")
 )
 
-type response struct {
-	Error       string `json:"error"`
-	Version     int    `json:"version"`
-	Type        string `json:"type"`
-	ResultCount int    `json:"resultcount"`
-	Results     []Pkg  `json:"results"`
-}
-
-//By specifies what to seach by in RPC searches
+// By specifies what to seach by in RPC searches.
 type By int
 
 const (
@@ -34,6 +26,7 @@ const (
 	MakeDepends
 	OptDepends
 	CheckDepends
+	None
 )
 
 func (by By) String() string {
@@ -52,37 +45,11 @@ func (by By) String() string {
 		return "optdepends"
 	case CheckDepends:
 		return "checkdepends"
+	case None:
+		return ""
 	default:
 		panic("invalid By")
 	}
-}
-
-// Pkg holds package information
-type Pkg struct {
-	ID             int      `json:"ID"`
-	Name           string   `json:"Name"`
-	PackageBaseID  int      `json:"PackageBaseID"`
-	PackageBase    string   `json:"PackageBase"`
-	Version        string   `json:"Version"`
-	Description    string   `json:"Description"`
-	URL            string   `json:"URL"`
-	NumVotes       int      `json:"NumVotes"`
-	Popularity     float64  `json:"Popularity"`
-	OutOfDate      int      `json:"OutOfDate"`
-	Maintainer     string   `json:"Maintainer"`
-	FirstSubmitted int      `json:"FirstSubmitted"`
-	LastModified   int      `json:"LastModified"`
-	URLPath        string   `json:"URLPath"`
-	Depends        []string `json:"Depends"`
-	MakeDepends    []string `json:"MakeDepends"`
-	CheckDepends   []string `json:"CheckDepends"`
-	Conflicts      []string `json:"Conflicts"`
-	Provides       []string `json:"Provides"`
-	Replaces       []string `json:"Replaces"`
-	OptDepends     []string `json:"OptDepends"`
-	Groups         []string `json:"Groups"`
-	License        []string `json:"License"`
-	Keywords       []string `json:"Keywords"`
 }
 
 func get(values url.Values) ([]Pkg, error) {
