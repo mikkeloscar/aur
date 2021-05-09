@@ -58,7 +58,7 @@ type RequestEditorFn func(ctx context.Context, req *http.Request) error
 
 func NewClient(opts ...ClientOption) (*Client, error) {
 	client := Client{
-		baseURL:        "",
+		baseURL:        _defaultURL,
 		HTTPClient:     nil,
 		RequestEditors: []RequestEditorFn{},
 	}
@@ -75,14 +75,14 @@ func NewClient(opts ...ClientOption) (*Client, error) {
 		client.HTTPClient = http.DefaultClient
 	}
 
-	// set default baseURL if not present or valid
-	if client.baseURL == "" {
-		client.baseURL = _defaultURL
-	}
+	// ensure base URL has /rpc.php?
+	if !strings.HasSuffix(client.baseURL, "rpc.php?") {
+		// ensure the server URL always has a trailing slash
+		if !strings.HasSuffix(client.baseURL, "/") {
+			client.baseURL += "/"
+		}
 
-	// ensure the server URL always has a trailing slash
-	if !strings.HasSuffix(client.baseURL, "/") {
-		client.baseURL += "/"
+		client.baseURL += "rpc.php?"
 	}
 
 	return &client, nil
@@ -93,6 +93,15 @@ func NewClient(opts ...ClientOption) (*Client, error) {
 func WithHTTPClient(doer HTTPRequestDoer) ClientOption {
 	return func(c *Client) error {
 		c.HTTPClient = doer
+
+		return nil
+	}
+}
+
+// WithBaseURL allows overriding the default base URL of the client,
+func WithBaseURL(baseURL string) ClientOption {
+	return func(c *Client) error {
+		c.baseURL = baseURL
 
 		return nil
 	}
@@ -124,10 +133,10 @@ func (c *Client) applyEditors(ctx context.Context, req *http.Request, additional
 	return nil
 }
 
-func newAURRPCRequest(baseURL string, values url.Values) (*http.Request, error) {
+func newAURRPCRequest(ctx context.Context, baseURL string, values url.Values) (*http.Request, error) {
 	values.Set("v", "5")
 
-	req, err := http.NewRequest("GET", baseURL+values.Encode(), nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", baseURL+values.Encode(), nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -185,12 +194,11 @@ func (c *Client) Info(ctx context.Context, pkgs []string, reqEditors ...RequestE
 }
 
 func (c *Client) get(ctx context.Context, values url.Values, reqEditors []RequestEditorFn) ([]Pkg, error) {
-	req, err := newAURRPCRequest(c.baseURL, values)
+	req, err := newAURRPCRequest(ctx, c.baseURL, values)
 	if err != nil {
 		return nil, err
 	}
 
-	req = req.WithContext(ctx)
 	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
 		return nil, err
 	}

@@ -104,7 +104,7 @@ func TestSearchPanic(t *testing.T) {
 
 // TestSearchByDepends test searching for packages by depends
 func TestSearchByDepends(t *testing.T) {
-	rs, err := SearchBy("python", Depends)
+	rs, err := SearchBy("linux", Depends)
 	expectPackages(t, 100, rs, err)
 }
 
