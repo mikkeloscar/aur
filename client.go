@@ -15,7 +15,7 @@ type PayloadError struct {
 }
 
 func (r *PayloadError) Error() string {
-	return fmt.Sprintf("status %d: err %s", r.StatusCode, r.ErrorField)
+	return fmt.Sprintf("status %d: %s", r.StatusCode, r.ErrorField)
 }
 
 const _defaultURL = "https://aur.archlinux.org/rpc.php?"

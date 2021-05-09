@@ -92,9 +92,7 @@ func searchBy(query, by string) ([]Pkg, error) {
 
 func getErrorByStatusCode(code int) error {
 	switch code {
-	case http.StatusBadGateway, http.StatusGatewayTimeout:
-		return ErrServiceUnavailable
-	case http.StatusServiceUnavailable:
+	case http.StatusBadGateway, http.StatusGatewayTimeout, http.StatusServiceUnavailable:
 		return ErrServiceUnavailable
 	}
 	return nil
