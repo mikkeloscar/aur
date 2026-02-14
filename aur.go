@@ -7,13 +7,11 @@ import (
 	"net/url"
 )
 
-//AURURL is the base string from which the query is built
+// AURURL is the base string from which the query is built
 var AURURL = "https://aur.archlinux.org/rpc.php?"
 
-var (
-	// ErrServiceUnavailable represents a error when AUR is unavailable
-	ErrServiceUnavailable = errors.New("AUR is unavailable at this moment")
-)
+// ErrServiceUnavailable represents a error when AUR is unavailable
+var ErrServiceUnavailable = errors.New("AUR is unavailable at this moment")
 
 type response struct {
 	Error       string `json:"error"`
@@ -23,13 +21,14 @@ type response struct {
 	Results     []Pkg  `json:"results"`
 }
 
-//By specifies what to seach by in RPC searches
+// By specifies what to seach by in RPC searches
 type By int
 
 const (
 	Name By = iota + 1
 	NameDesc
 	Maintainer
+	CoMaintainers
 	Depends
 	MakeDepends
 	OptDepends
@@ -44,6 +43,8 @@ func (by By) String() string {
 		return "name-desc"
 	case Maintainer:
 		return "maintainer"
+	case CoMaintainers:
+		return "comaintainers"
 	case Depends:
 		return "depends"
 	case MakeDepends:
@@ -83,6 +84,7 @@ type Pkg struct {
 	Groups         []string `json:"Groups"`
 	License        []string `json:"License"`
 	Keywords       []string `json:"Keywords"`
+	CoMaintainers  []string `json:"CoMaintainers"`
 }
 
 func get(values url.Values) ([]Pkg, error) {
